@@ -31,6 +31,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.*;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -74,6 +75,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import de.greenrobot.event.EventBus;
 import org.slf4j.Logger;
+import com.mendhak.gpslogger.SensorLogger;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -109,7 +111,10 @@ public class GpsMainActivity extends AppCompatActivity
         setUpNavigationDrawer(savedInstanceState);
 
         loadDefaultFragmentView();
+
         startAndBindService();
+
+
         registerEventBus();
 
         if(preferenceHelper.shouldStartLoggingOnAppLaunch()){
@@ -149,7 +154,9 @@ public class GpsMainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+
         startAndBindService();
+
     }
 
 
@@ -741,7 +748,10 @@ public class GpsMainActivity extends AppCompatActivity
                 childView.setLayoutParams(toolbarParams);
                 // Get the child count of this view group, and compute the item widths based on this count & screen size
                 int innerChildCount = ((ViewGroup) childView).getChildCount();
-                int itemWidth  = (screenWidth / innerChildCount);
+                if (innerChildCount!= 0) {
+                    int itemWidth = (screenWidth / innerChildCount);
+                }
+                int itemWidth = (screenWidth );
                 // Create layout params for the ActionMenuView
                 ActionMenuView.LayoutParams params = new ActionMenuView.LayoutParams(itemWidth, Toolbar.LayoutParams.WRAP_CONTENT);
                 // Loop through the children
@@ -762,11 +772,11 @@ public class GpsMainActivity extends AppCompatActivity
         setBulbStatus(session.isStarted());
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbarBottom);
-        MenuItem mnuAnnotate = toolbar.getMenu().findItem(R.id.mnuAnnotate);
-        MenuItem mnuOnePoint = toolbar.getMenu().findItem(R.id.mnuOnePoint);
-        MenuItem mnuAutoSendNow = toolbar.getMenu().findItem(R.id.mnuAutoSendNow);
+      //  MenuItem mnuAnnotate = toolbar.getMenu().findItem(R.id.mnuAnnotate);
+       // MenuItem mnuOnePoint = toolbar.getMenu().findItem(R.id.mnuOnePoint);
+       // MenuItem mnuAutoSendNow = toolbar.getMenu().findItem(R.id.mnuAutoSendNow);
 
-        if (mnuOnePoint != null) {
+      /*  if (mnuOnePoint != null) {
             mnuOnePoint.setEnabled(!session.isStarted());
             mnuOnePoint.setIcon((session.isStarted() ? R.drawable.singlepoint_disabled : R.drawable.singlepoint));
         }
@@ -788,7 +798,7 @@ public class GpsMainActivity extends AppCompatActivity
                 }
             }
 
-        }
+        }*/
     }
 
     @Override
@@ -801,7 +811,7 @@ public class GpsMainActivity extends AppCompatActivity
         LOG.debug("Menu Item: " + String.valueOf(item.getTitle()));
 
         switch (id) {
-            case R.id.mnuAnnotate:
+      /*      case R.id.mnuAnnotate:
                 annotate();
                 return true;
             case R.id.mnuOnePoint:
@@ -835,7 +845,7 @@ public class GpsMainActivity extends AppCompatActivity
                 return true;
             case R.id.mnuSFTP:
                 uploadToSFTP();
-                return true;
+                return true;*/
             default:
                 return true;
         }
@@ -1144,6 +1154,7 @@ public class GpsMainActivity extends AppCompatActivity
         // Now bind to service
         bindService(serviceIntent, gpsServiceConnection, Context.BIND_AUTO_CREATE);
         session.setBoundToService(true);
+
     }
 
 

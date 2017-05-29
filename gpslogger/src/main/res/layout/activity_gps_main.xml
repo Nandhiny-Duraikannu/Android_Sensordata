@@ -12,42 +12,45 @@
         android:id="@+id/supercontainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_height="55dp"
             android:layout_width="match_parent"
-            android:minHeight="?attr/actionBarSize"
+            android:layout_height="55dp"
             android:background="?attr/colorPrimary"
+            android:contentInsetStart="72dp"
+            android:minHeight="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            android:contentInsetStart="72dp">
+            android:visibility="invisible">
+
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                            android:orientation="horizontal"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content">
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_alignParentRight="true"
-                    android:contentDescription="GPS fix status"
+                    android:id="@+id/notification_bulb"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:padding="5dp"
+                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:id="@+id/notification_bulb"
-                    android:src="@drawable/circle_none"/>
+                    android:contentDescription="GPS fix status"
+                    android:padding="5dp"
+                    android:src="@drawable/circle_none" />
 
 
                 <ProgressBar
                     android:id="@+id/progressBarGpsFix"
-                    android:progressDrawable="@drawable/progress"
-                    android:layout_centerVertical="true"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:visibility="invisible"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/notification_bulb"
                     android:indeterminateOnly="true"
-                    android:layout_toLeftOf="@id/notification_bulb"/>
+                    android:progressDrawable="@drawable/progress"
+                    android:visibility="invisible" />
 
             </RelativeLayout>
-            </android.support.v7.widget.Toolbar>
+        </android.support.v7.widget.Toolbar>
         <!-- As the main content view, the view below consumes the entire
              space available using match_parent in both dimensions. -->
         <FrameLayout
@@ -56,15 +59,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
         </FrameLayout>
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbarBottom"
-            android:layout_gravity="bottom"
-            android:layout_height="wrap_content"
             android:layout_width="fill_parent"
-            android:visibility="visible"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:background="@color/primaryColor"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            />
+            android:visibility="invisible" />
     </FrameLayout>
 
 

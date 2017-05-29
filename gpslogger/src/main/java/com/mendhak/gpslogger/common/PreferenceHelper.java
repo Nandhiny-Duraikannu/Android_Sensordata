@@ -51,6 +51,7 @@ public class PreferenceHelper {
         if(instance==null){
             instance = new PreferenceHelper();
             instance.prefs = PreferenceManager.getDefaultSharedPreferences(AppSettings.getInstance().getApplicationContext());
+
         }
 
         return instance;
@@ -275,6 +276,7 @@ public class PreferenceHelper {
     @ProfilePreference(name= PreferenceNames.GPSLOGGER_FOLDER)
     public String getGpsLoggerFolder() {
         return prefs.getString(PreferenceNames.GPSLOGGER_FOLDER, Files.storageFolder(AppSettings.getInstance().getApplicationContext()).getAbsolutePath());
+
     }
 
 
@@ -283,6 +285,7 @@ public class PreferenceHelper {
      */
     public void setGpsLoggerFolder(String folderPath) {
         prefs.edit().putString(PreferenceNames.GPSLOGGER_FOLDER, folderPath).apply();
+        LOG.info("setGpsLoggerFolder nandhiny"+folderPath);
     }
 
 
@@ -341,7 +344,7 @@ public class PreferenceHelper {
      */
     @ProfilePreference(name= PreferenceNames.MINIMUM_INTERVAL)
     public int getMinimumLoggingInterval() {
-        return Strings.toInt(prefs.getString(PreferenceNames.MINIMUM_INTERVAL, "60"), 60);
+        return Strings.toInt(prefs.getString(PreferenceNames.MINIMUM_INTERVAL, "15"), 15);
     }
 
     /**

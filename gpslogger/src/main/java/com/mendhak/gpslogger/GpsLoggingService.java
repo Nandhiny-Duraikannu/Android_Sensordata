@@ -48,7 +48,7 @@ import com.mendhak.gpslogger.senders.AlarmReceiver;
 import com.mendhak.gpslogger.senders.FileSenderFactory;
 import de.greenrobot.event.EventBus;
 import org.slf4j.Logger;
-
+import com.mendhak.gpslogger.SensorLogger;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -408,6 +408,8 @@ public class GpsLoggingService extends Service  {
         notifyClientStarted();
         startPassiveManager();
         startGpsManager();
+        SensorLogger slog = new SensorLogger();
+        slog.onCreateSensorLog();
         requestActivityRecognitionUpdates();
 
     }

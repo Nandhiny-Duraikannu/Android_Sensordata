@@ -202,7 +202,7 @@ class Gpx10WriteHandler implements Runnable {
                     BufferedOutputStream initialOutput = new BufferedOutputStream(initialWriter);
 
                     initialOutput.write(getBeginningXml(dateTimeString).getBytes());
-                    initialOutput.write("<trk>".getBytes());
+                   // initialOutput.write("<trk>".getBytes());
                     initialOutput.write(getEndXml().getBytes());
                     initialOutput.flush();
                     initialOutput.close();
@@ -233,29 +233,31 @@ class Gpx10WriteHandler implements Runnable {
     String getBeginningXml(String dateTimeString){
         StringBuilder initialXml = new StringBuilder();
         initialXml.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
-        initialXml.append("<gpx version=\"1.0\" creator=\"GPSLogger " + BuildConfig.VERSION_CODE + " - http://gpslogger.mendhak.com/\" ");
+    //    initialXml.append("<gpx version=\"1.0\" creator=\"GPSLogger " + BuildConfig.VERSION_CODE + " - http://gpslogger.mendhak.com/\" ");
+        initialXml.append("<gpx version=\"1.0\" ");
         initialXml.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
         initialXml.append("xmlns=\"http://www.topografix.com/GPX/1/0\" ");
         initialXml.append("xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 ");
         initialXml.append("http://www.topografix.com/GPX/1/0/gpx.xsd\">");
-        initialXml.append("<time>").append(dateTimeString).append("</time>");
+      //  initialXml.append("<time>").append(dateTimeString).append("</time>");
         return initialXml.toString();
     }
 
+   // String getEndXml(){        return "</trk></gpx>";    }
     String getEndXml(){
-        return "</trk></gpx>";
+        return "</gpx>";
     }
 
-    String getEndXmlWithSegment(){
-        return "</trkseg></trk></gpx>";
-    }
+  //  String getEndXmlWithSegment(){        return "</trkseg></trk></gpx>";    }
+  String getEndXmlWithSegment(){        return "</gpx>";    }
 
     String getTrackPointXml(Location loc, String dateTimeString) {
 
         StringBuilder track = new StringBuilder();
 
         if (addNewTrackSegment) {
-            track.append("<trkseg>");
+         //   track.append("<trkseg>");
+
         }
 
         track.append("<trkpt lat=\"")
@@ -264,12 +266,12 @@ class Gpx10WriteHandler implements Runnable {
                 .append(String.valueOf(loc.getLongitude()))
                 .append("\">");
 
-        if (loc.hasAltitude()) {
+      /*  if (loc.hasAltitude()) {
             track.append("<ele>").append(String.valueOf(loc.getAltitude())).append("</ele>");
-        }
+        }*/
 
         track.append("<time>").append(dateTimeString).append("</time>");
-
+/*
         if (loc.hasBearing()) {
             track.append("<course>").append(String.valueOf(loc.getBearing())).append("</course>");
         }
@@ -325,10 +327,11 @@ class Gpx10WriteHandler implements Runnable {
             }
         }
 
-
+*/
         track.append("</trkpt>\n");
 
-        track.append("</trkseg></trk></gpx>");
+      //  track.append("</trkseg></trk></gpx>");
+        track.append("</gpx>");
 
         return track.toString();
     }

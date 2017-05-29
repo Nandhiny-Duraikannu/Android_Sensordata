@@ -21,6 +21,8 @@ package com.mendhak.gpslogger.loggers;
 
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
+
 import com.mendhak.gpslogger.common.PreferenceHelper;
 import com.mendhak.gpslogger.common.Session;
 import com.mendhak.gpslogger.common.Strings;
@@ -49,7 +51,9 @@ public class FileLoggerFactory {
             return loggers;
         }
 
-        File gpxFolder = new File(preferenceHelper.getGpsLoggerFolder());
+       // File gpxFolder = new File(preferenceHelper.getGpsLoggerFolder());
+        File gpxFolder = new File("/storage/sdcard0/Android/data/Logger/files");
+        Log.d(String.valueOf(gpxFolder), "nandhiny getFileLoggers:"+gpxFolder);
         if (!gpxFolder.exists()) {
             gpxFolder.mkdirs();
         }
