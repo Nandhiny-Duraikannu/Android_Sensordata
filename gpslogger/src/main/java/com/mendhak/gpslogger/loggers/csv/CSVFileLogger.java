@@ -29,6 +29,8 @@ import com.mendhak.gpslogger.loggers.Files;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -60,8 +62,8 @@ public class CSVFileLogger implements FileLogger {
 
         FileOutputStream writer = new FileOutputStream(file, true);
         BufferedOutputStream output = new BufferedOutputStream(writer);
-
-        String dateTimeString = Strings.getIsoDateTime(new Date(loc.getTime()));
+        String dateTimeString = new SimpleDateFormat("yyyy-MM-dd;HH:mm:ss").format(Calendar.getInstance().getTime());
+    //    String dateTimeString = Strings.getIsoDateTime(new Date(loc.getTime()));
         String csvLine = getCsvLine(loc, dateTimeString);
 
 

@@ -20,6 +20,8 @@
 package com.mendhak.gpslogger.loggers.gpx;
 
 import android.location.Location;
+import android.util.Log;
+
 import com.mendhak.gpslogger.BuildConfig;
 import com.mendhak.gpslogger.common.Maths;
 import com.mendhak.gpslogger.common.RejectionHandler;
@@ -30,10 +32,16 @@ import com.mendhak.gpslogger.loggers.Files;
 import org.slf4j.Logger;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+
+
+
 
 
 public class Gpx10FileLogger implements FileLogger {
@@ -56,8 +64,11 @@ public class Gpx10FileLogger implements FileLogger {
         if (time <= 0) {
             time = System.currentTimeMillis();
         }
-        String dateTimeString = Strings.getIsoDateTime(new Date(time));
+    //    String dateTimeString = Strings.getIsoDateTime(new Date(time));
 
+        Log.d(String.valueOf(loc), "nandhiny write in gps file: ");
+
+        String dateTimeString = new SimpleDateFormat("yyyy-MM-dd;HH:mm:ss").format(Calendar.getInstance().getTime());
         Gpx10WriteHandler writeHandler = new Gpx10WriteHandler(dateTimeString, gpxFile, loc, addNewTrackSegment);
         EXECUTOR.execute(writeHandler);
     }

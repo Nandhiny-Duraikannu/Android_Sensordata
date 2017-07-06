@@ -24,12 +24,25 @@ import android.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.hardware.Sensor;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorEvent;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.*;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.text.format.Time;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Toast;
+import android.hardware.SensorManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
@@ -47,6 +60,7 @@ import com.mendhak.gpslogger.loggers.nmea.NmeaFileLogger;
 import com.mendhak.gpslogger.senders.AlarmReceiver;
 import com.mendhak.gpslogger.senders.FileSenderFactory;
 import de.greenrobot.event.EventBus;
+import android.support.v7.app.AppCompatActivity;
 import org.slf4j.Logger;
 import com.mendhak.gpslogger.SensorLogger;
 import java.io.File;
@@ -54,12 +68,70 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class GpsLoggingService extends Service  {
+
+
+import android.content.Context;
+import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
+import android.text.format.Time;
+import android.util.Log;
+import android.util.Xml;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.opencsv.CSVWriter;
+
+
+import org.xmlpull.v1.XmlSerializer;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
+
+
+
+
+public class GpsLoggingService extends Service implements SensorEventListener {
     private static NotificationManager notificationManager;
     private static int NOTIFICATION_ID = 8675309;
     private final IBinder binder = new GpsLoggingBinder();
     AlarmManager nextPointAlarmManager;
     private NotificationCompat.Builder nfc = null;
+    float[] history = new float[2];
+    Sensor accelerometer;
+    Sensor gyro;
+    Sensor magnetometer;
+    SensorManager manager;
+  //  Button button_stop;
+  //  Button button_start;
+    boolean checkbox_accelerometer;
+    boolean checkbox_gyroscope;
+    boolean checkbox_magnetometer;
+    Button button_output;
+   //EditText samplerate ;
+    Time previousTime;
+    boolean is_logging;
+    boolean logged_once;
+    int total_checked;
+    int count_output_written = 0;
+    int sampling_rate;
+    int  sample;
+    String row_to_be_written[] = {"", "", "", "", "", "", "", "", ""};
 
     private static final Logger LOG = Logs.of(GpsLoggingService.class);
 
@@ -93,6 +165,7 @@ public class GpsLoggingService extends Service  {
         nextPointAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         registerEventBus();
+
     }
 
     private void requestActivityRecognitionUpdates() {
@@ -127,6 +200,7 @@ public class GpsLoggingService extends Service  {
                 });
 
         googleApiClient = builder.build();
+
         googleApiClient.connect();
     }
 
@@ -136,10 +210,12 @@ public class GpsLoggingService extends Service  {
             if(googleApiClient != null && googleApiClient.isConnected()){
                 ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(googleApiClient, activityRecognitionPendingIntent);
                 googleApiClient.disconnect();
+
             }
         }
         catch(Throwable t){
             LOG.warn(SessionLogcatAppender.MARKER_INTERNAL, "Tried to stop activity recognition updates", t);
+
         }
 
     }
@@ -174,6 +250,7 @@ public class GpsLoggingService extends Service  {
     @Override
     public void onLowMemory() {
         LOG.error("Android is low on memory!");
+
         super.onLowMemory();
     }
 
@@ -193,6 +270,7 @@ public class GpsLoggingService extends Service  {
 
                 if (bundle.getBoolean(IntentConstants.IMMEDIATE_START)) {
                     LOG.info("Intent received - Start Logging Now");
+
                     EventBus.getDefault().postSticky(new CommandEvents.RequestStartStop(true));
                 }
 
@@ -389,6 +467,7 @@ public class GpsLoggingService extends Service  {
      */
     protected void startLogging() {
         LOG.debug(".");
+
         session.setAddNewTrackSegment(true);
 
 
@@ -408,12 +487,62 @@ public class GpsLoggingService extends Service  {
         notifyClientStarted();
         startPassiveManager();
         startGpsManager();
-        SensorLogger slog = new SensorLogger();
-        slog.onCreateSensorLog();
+
         requestActivityRecognitionUpdates();
 
     }
 
+
+    private void onCreateSensorLogStart() {
+
+
+        final SensorEventListener context_listener = this;
+
+        is_logging = false;
+
+        total_checked = 0;
+
+        logged_once = false;
+
+        manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+       accelerometer = manager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
+        gyro = manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        magnetometer = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+
+                logged_once = true;
+                total_checked = 3;
+                sampling_rate = 10;
+
+               manager.registerListener(context_listener, accelerometer, sampling_rate);
+                manager.registerListener(context_listener, gyro, sampling_rate);
+                manager.registerListener(context_listener, magnetometer, sampling_rate);
+                is_logging = true;
+        File sdcard = new File("/storage/sdcard0/Android/data/Logger/files");
+        //  File file = new File(sdcard + "/sensorlog.xml");
+        //  File sdcard = Environment.getExternalStorageDirectory();
+        File file = new File(sdcard + "/sensorlog.csv");
+        Log.d(String.valueOf(is_logging), "nandhiny sensorlogger insidefile:");
+
+        if (file.exists())
+        {
+            file.delete();
+        }
+
+        String initial_row_to_be_written[] = {"Timestamp", "Accelerometer","","","Gyroscope","","","Magnetometer",""};
+        writeToFileSensor(initial_row_to_be_written);
+
+        String next_row[] = {"","XChange","YChange","X","Y","Z","Azimuth Angle","Pitch Angle","Roll"};
+       writeToFileSensor(next_row);
+
+        //    Toast.makeText(SensorLogger.this, "Started Logging!", Toast.LENGTH_LONG).show();
+
+    }
+
+   /* protected void onResume() {
+        super.onResume();
+    }*/
     /**
      * Asks the main service client to clear its form.
      */
@@ -540,7 +669,15 @@ public class GpsLoggingService extends Service  {
      */
     @SuppressWarnings("ResourceType")
     private void startGpsManager() {
+        //nandhiny remove
+        final SensorEventListener context_listener = this;
 
+        is_logging = false;
+
+        total_checked = 0;
+
+        logged_once = false;
+//nandhiny remove
         //If the user has been still for more than the minimum seconds
         if(userHasBeenStillForTooLong()) {
             LOG.info("No movement detected in the past interval, will not log");
@@ -558,6 +695,46 @@ public class GpsLoggingService extends Service  {
 
         gpsLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         towerLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        //nandhiny remove
+        manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        accelerometer = manager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
+        gyro = manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        magnetometer = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        //nandhiny-start
+        is_logging = true;
+        //nandhiny-end
+        Log.i("new","in sensor log b4 onclick");
+
+       //  samplerate =  (EditText)findViewById(R.id.samplerate);
+    /*    LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.fragment_simple_view, null);
+            sample = layout.findViewById(R.id.samplerate);
+        LOG.debug( "1nandhiny sensorlogger inside3:"+sample);*/
+
+        logged_once = true;
+        total_checked = 3;
+        sampling_rate = 10;
+
+
+        File sdcard = new File("/storage/sdcard0/Android/data/Logger/files");
+        //  File file = new File(sdcard + "/sensorlog.xml");
+        //  File sdcard = Environment.getExternalStorageDirectory();
+        File file = new File(sdcard + "/sensorlog.csv");
+        Log.d(String.valueOf(is_logging), "nandhiny sensorlogger insidefile:");
+
+        if (file.exists())
+        {
+            file.delete();
+        }
+        String initial_row_to_be_written[] = {"Timestamp", "Accelerometer","","","Gyroscope","","","Magnetometer",""};
+        writeToFileSensor(initial_row_to_be_written);
+
+        String next_row[] = {"","XChange","YChange","X","Y","Z","Azimuth Angle","Pitch Angle","Roll"};
+        writeToFileSensor(next_row);
+        LOG.debug( "1nandhiny sensorlogger inside4:");
+
+//nandhiny remove
 
         checkTowerAndGpsStatus();
 
@@ -567,9 +744,22 @@ public class GpsLoggingService extends Service  {
             gpsLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, gpsLocationListener);
             gpsLocationManager.addGpsStatusListener(gpsLocationListener);
             gpsLocationManager.addNmeaListener(gpsLocationListener);
-
+            LOG.debug("nandhiny call listeners");
+            manager.registerListener(context_listener, accelerometer, sampling_rate);
+            manager.registerListener(context_listener, gyro, sampling_rate);
+            manager.registerListener(context_listener, magnetometer, sampling_rate);
+            is_logging = true;
             session.setUsingGps(true);
+
             startAbsoluteTimer();
+
+
+            LOG.debug("nandhiny b4 sensor call");
+         //  onCreateSensorLogStart();
+            LOG.debug( "1nandhiny manager test:");
+
+
+
         }
 
         if (session.isTowerEnabled() &&  ( preferenceHelper.getChosenListeners().contains(LocationManager.NETWORK_PROVIDER)  || !session.isGpsEnabled() ) ) {
@@ -602,6 +792,7 @@ public class GpsLoggingService extends Service  {
     private void startAbsoluteTimer() {
         if (preferenceHelper.getAbsoluteTimeoutForAcquiringPosition() >= 1) {
             handler.postDelayed(stopManagerRunnable, preferenceHelper.getAbsoluteTimeoutForAcquiringPosition() * 1000);
+
         }
     }
 
@@ -847,7 +1038,8 @@ public class GpsLoggingService extends Service  {
         if(isPassiveLocation){
             LOG.debug("Logging passive location to file");
         }
-
+     //   LOG.debug("nandhiny b4 sensor call");
+      //  onCreateSensorLogStart();
         writeToFile(loc);
         resetAutoSendTimersIfNecessary();
         stopManagerAndResetAlarm();
@@ -971,6 +1163,125 @@ public class GpsLoggingService extends Service  {
             NmeaFileLogger nmeaLogger = new NmeaFileLogger(Strings.getFormattedFileName());
             nmeaLogger.write(timestamp, nmeaSentence);
         }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+    //    LOG.debug("nandhiny sensor changed event");
+        checkbox_accelerometer=true;
+        checkbox_magnetometer=true;
+        checkbox_gyroscope=true;
+        boolean output_to_file = false;
+        Time currentTime = new Time();
+        currentTime.setToNow();
+
+        if(previousTime == null){
+            previousTime = currentTime;
+
+        }
+        long difference = TimeUnit.MILLISECONDS.toSeconds(currentTime.toMillis(true) - previousTime.toMillis(true));
+
+        if (difference >= sampling_rate) {
+            if (count_output_written < total_checked){
+                output_to_file = true;
+                count_output_written += 1;
+            }
+            else{
+                previousTime = currentTime;
+                count_output_written = 0;
+            }
+        }
+
+        else{
+            return;
+        }
+
+        String currentDateandTime = new SimpleDateFormat("yyyy-MM-dd;HH:mm:ss").format(Calendar.getInstance().getTime());
+
+        if (output_to_file && is_logging && checkbox_magnetometer && event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            if (count_output_written == total_checked - 1){
+                row_to_be_written[6] =  Double.toString(event.values[0]);
+                row_to_be_written[7] = Double.toString(event.values[1]);
+                row_to_be_written[8] = Double.toString(event.values[2]);
+                row_to_be_written[0] = currentDateandTime;
+                writeToFileSensor(row_to_be_written);
+                for (int i =0;i<9;i++){
+                    row_to_be_written[i] = "";
+                }
+            }
+            else{
+                row_to_be_written[6] =  Double.toString(event.values[0]);
+                row_to_be_written[7] = Double.toString(event.values[1]);
+                row_to_be_written[8] = Double.toString(event.values[2]);
+            }
+
+        } else if (output_to_file && is_logging && checkbox_gyroscope && event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            if(count_output_written == total_checked - 1){
+                row_to_be_written[3] =  Double.toString(event.values[0]);
+                row_to_be_written[4] = Double.toString(event.values[1]);
+                row_to_be_written[5] = Double.toString(event.values[2]);
+                row_to_be_written[0] = currentDateandTime;
+                writeToFileSensor(row_to_be_written);
+                for (int i =0;i<9;i++){
+                    row_to_be_written[i] = "";
+                }
+            }
+            else{
+                row_to_be_written[3] =  Double.toString(event.values[0]);
+                row_to_be_written[4] = Double.toString(event.values[1]);
+                row_to_be_written[5] = Double.toString(event.values[2]);
+            }
+
+        } else if (output_to_file && is_logging && checkbox_accelerometer && event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            float xChange = history[0] - event.values[0];
+            float yChange = history[1] - event.values[1];
+
+            history[0] = event.values[0];
+            history[1] = event.values[1];
+
+            if(count_output_written == total_checked - 1){
+                row_to_be_written[1] =  Double.toString(xChange);
+                row_to_be_written[2] = Double.toString(yChange);
+                row_to_be_written[0] = currentDateandTime;
+                writeToFileSensor(row_to_be_written);
+                for (int i =0;i<9;i++){
+                    row_to_be_written[i] = "";
+                }
+            }
+            else{
+                row_to_be_written[1] =  Double.toString(xChange);
+                row_to_be_written[2] = Double.toString(yChange);
+            }
+
+        }
+
+    }
+
+    private void writeToFileSensor(String row[]) {
+
+        CSVWriter writer = null;
+        Log.d(String.valueOf(writer), "nandhiny sensorlogger inside writetofile:");
+        try
+        {
+            //   File sdcard = Environment.getExternalStorageDirectory();
+            File sdcard = new File("/storage/sdcard0/Android/data/Logger/files");
+
+            writer = new CSVWriter(new FileWriter(sdcard + "/sensorlog.csv", true), ',');
+
+            writer.writeNext(row);
+            Log.d(String.valueOf(is_logging), "nandhiny sensorlogger inside:");
+            writer.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 
     /**

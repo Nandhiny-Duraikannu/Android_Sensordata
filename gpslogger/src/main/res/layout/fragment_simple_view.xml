@@ -27,21 +27,20 @@
 
 
                     <EditText
-                        android:layout_alignParentRight="true"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
                         android:id="@+id/simple_lat_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@null"
                         android:editable="false"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center"
                         android:selectAllOnFocus="true"
                         android:textIsSelectable="true"
                         android:textSize="@dimen/simpleview_latlong_textsize"
-                        android:fontFamily="sans-serif"
-                        android:textStyle="italic"
-                        android:background="@null"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        />
+                        android:textStyle="italic" />
 
                 </LinearLayout>
             </TableRow>
@@ -55,51 +54,54 @@
 
 
                     <EditText
-                        android:layout_alignParentRight="true"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
                         android:id="@+id/simple_lon_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@null"
                         android:editable="false"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center"
                         android:selectAllOnFocus="true"
                         android:textIsSelectable="true"
                         android:textSize="@dimen/simpleview_latlong_textsize"
-                        android:fontFamily="sans-serif"
-                        android:textStyle="italic"
-                        android:background="@null"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        />
-
+                        android:textStyle="italic" />
 
 
                 </LinearLayout>
             </TableRow>
             <TableRow>
+
                 <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
+                    android:weightSum="1">
 
-                <com.dd.processbutton.iml.ActionProcessButton
-                    android:id="@+id/btnActionProcess"
-                    android:layout_width="wrap_content"
-                    android:width="240dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="22dp"
-                    android:layout_marginTop="24dp"
-                    android:text="@string/btn_start_logging"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp"
-                    custom:pb_colorComplete="@color/green_complete"
-                    custom:pb_colorNormal="@color/accentColorComplementary"
-                    custom:pb_colorPressed="@color/blue_pressed"
-                    custom:pb_colorProgress="@color/purple_progress"
-                    custom:pb_textComplete="Success"
-                    custom:pb_textProgress="Loading"
-                    custom:pb_textError="Error"
-                    custom:pb_colorError="@color/red_error" />
+
+                    <com.dd.processbutton.iml.ActionProcessButton
+                        android:id="@+id/btnActionProcess"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="22dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="24dp"
+                        android:width="240dp"
+
+                        android:text="@string/btn_start_logging"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        custom:pb_colorComplete="@color/green_complete"
+                        custom:pb_colorError="@color/red_error"
+                        custom:pb_colorNormal="@color/accentColorComplementary"
+                        custom:pb_colorPressed="@color/blue_pressed"
+                        custom:pb_colorProgress="@color/purple_progress"
+                        custom:pb_textComplete="Success"
+                        custom:pb_textError="Error"
+                        custom:pb_textProgress="Loading" />
                 </LinearLayout>
             </TableRow>
 
@@ -113,263 +115,249 @@
                 <GridLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:useDefaultMargins="true"
                     android:alignmentMode="alignBounds"
-                    android:columnOrderPreserved="false"
                     android:columnCount="4"
+                    android:columnOrderPreserved="false"
                     android:rowCount="7"
-                    >
+                    android:useDefaultMargins="true">
 
 
                     <ImageView
                         android:id="@+id/simpleview_imgSatelliteCount"
                         android:layout_width="@dimen/simpleview_grid_iconwidth"
                         android:layout_height="@dimen/simlpeview_grid_iconheight"
-                        android:layout_gravity="left|center"
                         android:layout_column="0"
+                        android:layout_gravity="left|center"
                         android:layout_row="0"
-                        android:src="@drawable/satellite_count"
                         android:contentDescription="@string/txt_satellites"
-                        />
+                        android:src="@drawable/satellite_count" />
 
                     <TextView
                         android:id="@+id/simpleview_txtSatelliteCount"
-                        android:layout_gravity="left|center"
                         android:layout_width="@dimen/simpleview_grid_labelwidth"
                         android:layout_height="22dp"
                         android:layout_column="1"
+                        android:layout_gravity="left|center"
                         android:layout_row="0"
                         android:selectAllOnFocus="true"
-                        android:textIsSelectable="true"
-                        />
+                        android:textIsSelectable="true" />
 
 
                     <ImageView
                         android:id="@+id/simpleview_imgAccuracy"
-                        android:layout_gravity="center|top"
                         android:layout_width="@dimen/simpleview_grid_iconwidth"
                         android:layout_height="@dimen/simlpeview_grid_iconheight"
-                        android:src="@drawable/accuracy"
-                        android:layout_row="0"
                         android:layout_column="2"
+                        android:layout_gravity="center|top"
+                        android:layout_row="0"
                         android:contentDescription="@string/txt_accuracy"
-                        />
+                        android:src="@drawable/accuracy" />
 
 
                     <TextView
                         android:id="@+id/simpleview_txtAccuracy"
-                        android:layout_gravity="left|center"
-                        android:layout_row="0"
-
-                        android:layout_column="3"
                         android:layout_width="@dimen/simpleview_grid_labelwidth"
                         android:layout_height="wrap_content"
+
+                        android:layout_column="3"
+                        android:layout_gravity="left|center"
+                        android:layout_row="0"
                         android:selectAllOnFocus="true"
-                        android:textIsSelectable="true"
-                        />
+                        android:textIsSelectable="true" />
 
 
                     <ImageView
                         android:id="@+id/simpleview_imgAltitude"
-                        android:layout_column="0"
-                        android:layout_row="1"
-                        android:layout_gravity="center"
                         android:layout_width="@dimen/simpleview_grid_iconwidth"
                         android:layout_height="@dimen/simlpeview_grid_iconheight"
+                        android:layout_column="0"
+                        android:layout_gravity="center"
+                        android:layout_row="1"
                         android:contentDescription="@string/txt_altitude"
-                        android:src="@drawable/altitude"
-                        />
+                        android:src="@drawable/altitude" />
 
                     <TextView
                         android:id="@+id/simpleview_txtAltitude"
-                        android:layout_gravity="left|center"
                         android:layout_width="@dimen/simpleview_grid_labelwidth"
                         android:layout_height="wrap_content"
                         android:layout_column="1"
+                        android:layout_gravity="left|center"
                         android:layout_row="1"
                         android:selectAllOnFocus="true"
-                        android:textIsSelectable="true"
-                        />
+                        android:textIsSelectable="true" />
 
                     <ImageView
                         android:id="@+id/simpleview_imgDuration"
-                        android:layout_gravity="center|top"
                         android:layout_width="@dimen/simpleview_grid_iconwidth"
                         android:layout_height="@dimen/simlpeview_grid_iconheight"
-                        android:src="@drawable/duration"
                         android:layout_column="0"
+                        android:layout_gravity="center|top"
                         android:layout_row="2"
                         android:contentDescription="@string/txt_travel_duration"
-                        />
+                        android:src="@drawable/duration" />
 
                     <TextView
                         android:id="@+id/simpleview_txtDuration"
-                        android:layout_gravity="left|center"
                         android:layout_width="@dimen/simpleview_grid_labelwidth"
                         android:layout_height="wrap_content"
                         android:layout_column="1"
+                        android:layout_gravity="left|center"
                         android:layout_row="2"
                         android:selectAllOnFocus="true"
-                        android:textIsSelectable="true"
-                        />
+                        android:textIsSelectable="true" />
 
 
                     <ImageView
                         android:id="@+id/simpleview_imgDirection"
-                        android:layout_gravity="center|top"
                         android:layout_width="@dimen/simpleview_grid_iconwidth"
                         android:layout_height="@dimen/simlpeview_grid_iconheight"
-                        android:src="@drawable/direction"
                         android:layout_column="2"
+                        android:layout_gravity="center|top"
                         android:layout_row="1"
                         android:contentDescription="@string/txt_direction"
-                        />
+                        android:src="@drawable/direction" />
 
                     <TextView
                         android:id="@+id/simpleview_txtDirection"
-                        android:layout_gravity="left|center"
                         android:layout_width="@dimen/simpleview_grid_labelwidth"
                         android:layout_height="wrap_content"
                         android:layout_column="3"
+                        android:layout_gravity="left|center"
                         android:layout_row="1"
                         android:selectAllOnFocus="true"
-                        android:textIsSelectable="true"
-                        />
+                        android:textIsSelectable="true" />
 
                     <ImageView
                         android:id="@+id/simpleview_imgSpeed"
-                        android:layout_gravity="center|top"
                         android:layout_width="@dimen/simpleview_grid_iconwidth"
                         android:layout_height="@dimen/simlpeview_grid_iconheight"
-                        android:src="@drawable/speed"
                         android:layout_column="2"
+                        android:layout_gravity="center|top"
                         android:layout_row="2"
                         android:contentDescription="@string/txt_speed"
-                        />
+                        android:src="@drawable/speed" />
 
                     <TextView
                         android:id="@+id/simpleview_txtSpeed"
-                        android:layout_gravity="left|center"
                         android:layout_width="@dimen/simpleview_grid_labelwidth"
                         android:layout_height="wrap_content"
                         android:layout_column="3"
+                        android:layout_gravity="left|center"
                         android:layout_row="2"
                         android:selectAllOnFocus="true"
-                        android:textIsSelectable="true"
-                        />
+                        android:textIsSelectable="true" />
 
 
                     <ImageView
                         android:id="@+id/simpleview_distance"
-                        android:layout_gravity="center|top"
                         android:layout_width="@dimen/simpleview_grid_iconwidth"
                         android:layout_height="@dimen/simlpeview_grid_iconheight"
-                        android:src="@drawable/distance"
                         android:layout_column="0"
+                        android:layout_gravity="center|top"
                         android:layout_row="3"
                         android:contentDescription="@string/txt_travel_distance"
-                        />
+                        android:src="@drawable/distance" />
 
                     <TextView
                         android:id="@+id/simpleview_txtDistance"
-                        android:layout_gravity="left|center"
-
                         android:layout_height="wrap_content"
+
                         android:layout_column="1"
+                        android:layout_gravity="left|center"
                         android:layout_row="3"
                         android:selectAllOnFocus="true"
-                        android:textIsSelectable="true"
-                        />
+                        android:textIsSelectable="true" />
 
                     <ImageView
                         android:id="@+id/simpleview_points"
-                        android:layout_gravity="center|top"
                         android:layout_width="@dimen/simpleview_grid_iconwidth"
                         android:layout_height="@dimen/simlpeview_grid_iconheight"
-                        android:src="@drawable/points"
                         android:layout_column="2"
+                        android:layout_gravity="center|top"
                         android:layout_row="3"
                         android:contentDescription="@string/txt_number_of_points"
-                        />
+                        android:src="@drawable/points" />
 
                     <TextView
                         android:id="@+id/simpleview_txtPoints"
-                        android:layout_gravity="left|center"
-
                         android:layout_height="wrap_content"
+
                         android:layout_column="3"
+                        android:layout_gravity="left|center"
                         android:layout_row="3"
                         android:selectAllOnFocus="true"
-                        android:textIsSelectable="true"
-                        />
+                        android:textIsSelectable="true" />
 
                     <TextView
                         android:id="@+id/simpleview_txtfilepath"
-                        android:layout_row="4"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
                         android:layout_column="0"
                         android:layout_columnSpan="4"
                         android:layout_gravity="center"
-                        android:gravity="center"
-                        android:visibility="visible"
-                        android:textSize="14sp"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="12dp"
+                        android:layout_row="4"
                         android:width="0dip"
-                        android:text=""/>
-
-                    <LinearLayout android:layout_column="0"
-                        android:layout_row="5"
-                        android:layout_columnSpan="4"
-                        android:layout_width="fill_parent"
-                        android:layout_gravity="center"
                         android:gravity="center"
-                        android:textAlignment="center"
-                        >
+                        android:paddingTop="12dp"
+                        android:text=""
+                        android:textSize="14sp"
+                        android:visibility="visible" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_column="0"
+                        android:layout_columnSpan="4"
+                        android:layout_gravity="center"
+                        android:layout_row="5"
+                        android:gravity="center"
+                        android:textAlignment="center">
 
                         <ImageView
                             android:id="@+id/simpleview_imgGpx"
-                            android:contentDescription="@string/log_gpx_title"
-                            android:visibility="invisible"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            android:src="@drawable/gpx"/>
+                            android:contentDescription="@string/log_gpx_title"
+                            android:src="@drawable/gpx"
+                            android:visibility="invisible" />
+
                         <ImageView
                             android:id="@+id/simpleview_imgKml"
-                            android:contentDescription="@string/log_kml_title"
-                            android:visibility="invisible"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            android:src="@drawable/kml"/>
+                            android:contentDescription="@string/log_kml_title"
+                            android:src="@drawable/kml"
+                            android:visibility="invisible" />
+
                         <ImageView
                             android:id="@+id/simpleview_imgCsv"
-                            android:contentDescription="@string/log_plain_text_title"
-                            android:visibility="invisible"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            android:src="@drawable/csv"/>
+                            android:contentDescription="@string/log_plain_text_title"
+                            android:src="@drawable/csv"
+                            android:visibility="invisible" />
+
                         <ImageView
                             android:id="@+id/simpleview_imgNmea"
-                            android:contentDescription="@string/log_nmea_title"
-                            android:visibility="invisible"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            android:src="@drawable/nmea"/>
+                            android:contentDescription="@string/log_nmea_title"
+                            android:src="@drawable/nmea"
+                            android:visibility="invisible" />
+
                         <ImageView
                             android:id="@+id/simpleview_imgLink"
-                            android:contentDescription="@string/log_customurl_title"
-                            android:visibility="invisible"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            android:src="@drawable/link"/>
+                            android:contentDescription="@string/log_customurl_title"
+                            android:src="@drawable/link"
+                            android:visibility="invisible" />
                     </LinearLayout>
 
                     <Space
-                        android:layout_row="6"
                         android:layout_column="0"
                         android:layout_columnSpan="3"
                         android:layout_gravity="fill"
-                        />
+                        android:layout_row="6" />
 
 
                 </GridLayout>

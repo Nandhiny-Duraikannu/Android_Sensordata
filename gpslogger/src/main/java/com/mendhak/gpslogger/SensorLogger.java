@@ -38,7 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-public class SensorLogger extends AppCompatActivity implements SensorEventListener {
+public class SensorLogger extends AppCompatActivity  implements SensorEventListener {
     float[] history = new float[2];
     private Sensor accelerometer;
     private Sensor gyro;
@@ -50,7 +50,7 @@ public class SensorLogger extends AppCompatActivity implements SensorEventListen
     CheckBox checkbox_gyroscope;
     CheckBox checkbox_magnetometer;
     Button button_output;
-    EditText edittext_sampling_rate;
+    //EditText samplerate;
     Time previousTime;
     boolean is_logging;
     boolean logged_once;
@@ -71,13 +71,14 @@ public class SensorLogger extends AppCompatActivity implements SensorEventListen
         logged_once = false;
 
        Log.d(String.valueOf(is_logging), "nandhiny sensorlogger inside1:");
-      // button_start = (Button) findViewById(R.id.btnStartStop);
+      // button_start = (Button) findViewById(R.id.btnActionProcess);
        // button_stop = (Button) findViewById(R.id.s);
-     /*   checkbox_accelerometer = (CheckBox) findViewById(R.id.checkbox_accelerometer);
+    /*    checkbox_accelerometer = (CheckBox) findViewById(R.id.checkbox_accelerometer);
         checkbox_gyroscope = (CheckBox) findViewById(R.id.checkbox_gyroscope);
         checkbox_magnetometer = (CheckBox) findViewById(R.id.checkbox_magnetometer);
         edittext_sampling_rate = (EditText) findViewById(R.id.edittext_sampling_rate);
         button_output = (Button)findViewById(R.id.button_view_output);*/
+     //  samplerate = (EditText) findViewById(R.id.samplerate);
 
         manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
        Log.d(String.valueOf(is_logging), "nandhiny sensorlogger inside3:");
@@ -85,23 +86,23 @@ public class SensorLogger extends AppCompatActivity implements SensorEventListen
         gyro = manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         magnetometer = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
       //  Log.i("new","in sensor log b4 onclick");
-   //     button_start.setOnClickListener(new View.OnClickListener() {
-     //       @Override
-       //     public void onClick(View v) {
+      //  button_start.setOnClickListener(new View.OnClickListener() {
+       //     @Override
+      //      public void onClick(View v) {
                 logged_once = true;
                 total_checked = 3;
-                sampling_rate = 15;
+                sampling_rate = 5;
 
-       Log.d(String.valueOf(is_logging), "nandhiny sensorlogger inside4:");
+     //  Log.d(String.valueOf(is_logging), "nandhiny sensorlogger inside4:"+samplerate+sampling_rate);
                 manager.registerListener(context_listener, accelerometer, sampling_rate);
                 manager.registerListener(context_listener, gyro, sampling_rate);
                 manager.registerListener(context_listener, magnetometer, sampling_rate);
                 is_logging = true;
             //    Toast.makeText(SensorLogger.this, "Started Logging!", Toast.LENGTH_LONG).show();
-    //    }
-      //  });
+     //   }
+    //    });
 
-       /* button_stop.setOnClickListener(new View.OnClickListener() {
+      /* button_stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 is_logging = false;
@@ -112,7 +113,7 @@ public class SensorLogger extends AppCompatActivity implements SensorEventListen
             }
         });*/
 
-     /*   button_output.setOnClickListener(new View.OnClickListener() {
+      /*  button_output.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!logged_once){
